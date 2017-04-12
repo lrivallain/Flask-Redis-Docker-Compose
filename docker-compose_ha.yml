@@ -1,0 +1,32 @@
+web_1:
+  build: .
+  command: python app.py
+  ports:
+   - 8080
+  volumes:
+   - .:/code
+  links:
+   - redis
+
+web_2:
+  build: .
+  command: python app.py
+  ports:
+   - 8080
+  volumes:
+   - .:/code
+  links:
+   - redis
+
+redis:
+  image: redis
+
+lb:
+  image: dockercloud/haproxy
+  ports:
+   - 80:80
+  links:
+   - web_1
+   - web_2
+  volumes:
+   - /var/run/docker.sock:/var/run/docker.sock
